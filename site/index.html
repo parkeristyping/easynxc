@@ -20,7 +20,6 @@
     </div>
     <div id="loading" style="display: none">Loading...</div>
     <div id="play" style="display: none; cursor: hand">&#9658;</div>
-    <div id="reset" style="display: none; cursor: hand">Choose a new song</div>
   </div>
   <script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>
   <script>
@@ -71,11 +70,6 @@
                song.playbackRate.value = ((e.pageX * 2) / 1000);
              };
              $('#play').hide();
-             $('#reset').show();
-           });
-
-           $("#reset").click(function() {
-             location.reload(true); // lulz
            });
          });
          $("#loading").hide();

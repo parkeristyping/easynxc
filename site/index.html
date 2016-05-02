@@ -1,0 +1,92 @@
+<head>
+  <style>
+   #app {
+     position:absolute;
+     width: 100%;
+     top: 50%;
+     text-align: center;
+   }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div id="form">
+      Enter the link to a YouTube video:
+      <form>
+        <input name="url" placeholder="https://www.youtube.com/watch?v=ctjOKI-2vNg"><br>
+        <input type="submit" value="Load">
+      </form>
+    </div>
+    <div id="loading" style="display: none">Loading...</div>
+    <div id="play" style="display: none; cursor: hand">&#9658;</div>
+    <div id="reset" style="display: none; cursor: hand">Choose a new song</div>
+  </div>
+  <script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>
+  <script>
+   $(document).ready(function() {
+     var audioContext = new AudioContext();
+
+     function ytLoad() {
+       $('#form').hide();
+       $('#loading').show();
+       setTimeout(function() {
+         $('#loading').html("Have faith. This just takes a minute because I haven't figured out how to compress the audio from youtube yet.");
+        setTimeout(function() {
+          $('#loading').html("Really, it's going to happen.");
+          setTimeout(function() {
+            $('#loading').html("Okay something might be broken.");
+          }, 10000);
+        }, 10000);
+       }, 10000);
+       var url = $('input[name="url"]').val();
+       $.ajax({
+         type: 'POST',
+         url: 'https://277rf8e457.execute-api.us-east-1.amazonaws.com/prod/song',
+         crossDomain: true,
+         data: '{"url":"' + url + '"}',
+         success: function(responseUrl) {
+           s3Load(responseUrl);
+         },
+         error: function() {
+           alert("oops - something went wrong. maybe reload and try a new song")
+         }
+       });
+     }
+
+     function s3Load(url) {
+       var song;
+       var request = new XMLHttpRequest();
+       request.open('GET', url, true);
+       request.responseType = 'arraybuffer';
+       request.onload = function() {
+         audioContext.decodeAudioData(request.response, function(buffer) {
+           var song = audioContext.createBufferSource();
+           song.buffer = buffer;
+           song.connect(audioContext.destination);
+
+           $("#play").click(function() {
+             song.start(0);
+             document.onmousemove = function(e){
+               song.playbackRate.value = ((e.pageX * 2) / 1000);
+             };
+             $('#play').hide();
+             $('#reset').show();
+           });
+
+           $("#reset").click(function() {
+             location.reload(); // lulz
+           });
+         });
+         $("#loading").hide();
+         $("#play").show();
+       };
+       request.send();
+     }
+
+     $("#form").submit(function(e) {
+       ytLoad();
+       e.preventDefault();
+     });
+   });
+  </script>
+</body>

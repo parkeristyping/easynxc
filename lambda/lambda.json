@@ -1,0 +1,17 @@
+{
+  "name": "easynxc",
+  "description": "convert youtube videos",
+  "region": "us-east-1",
+  "handler": "function.lambda_handler",
+  "role": "arn:aws:iam::760236311560:role/lambda_s3_exec_role",
+  "requirements": ["youtube-dl"],
+  "ignore": [
+    "test*",
+    ".git*",
+    ".env",
+    "/*.pyc",
+    "/*.md"
+  ],
+  "timeout": 60,
+  "memory": 512
+}

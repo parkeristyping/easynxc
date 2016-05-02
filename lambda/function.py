@@ -34,7 +34,6 @@ def lambda_handler(event, context = {}):
                     "url": url
                 }
             )
-            f.close()
 
     s3_url = s3Client.generate_presigned_url('get_object', Params = {'Bucket': bucket, 'Key': key})
 

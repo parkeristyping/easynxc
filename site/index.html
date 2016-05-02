@@ -67,7 +67,12 @@
            $("#play").click(function() {
              song.start(0);
              document.onmousemove = function(e){
-               song.playbackRate.value = ((e.pageX * 2) / 1000);
+               // pageX: 0 - 1300
+               var xval = (e.pageX * 2) / 1300;
+               var a = Math.round(xval * 127);
+               var b = 255 - a;
+               song.playbackRate.value = (xval);
+               $("body").css("background-color", "rgb("+a+"," +b+","+a+")");
              };
              $('#play').hide();
            });
